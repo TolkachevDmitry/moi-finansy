@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Личные финансы: расходы, доходы, переводы и накопления. Данные хранятся только на устройстве.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Мои финансы">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Мои финансы</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">₽</div>
+        <div><span class="eyebrow">ЛИЧНЫЙ БЮДЖЕТ</span><h1>Мои финансы</h1></div>
+      </div>
+      <button class="icon-btn" id="backupShortcut" type="button" title="Резервная копия" aria-label="Настройки и резервные копии">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M5 17v3h14v-3"/></svg>
+      </button>
+    </header>
+
+    <main id="app" tabindex="-1" aria-live="polite"></main>
+
+    <button class="fab" id="addBtn" aria-label="Добавить операцию" title="Добавить операцию" type="button"><span aria-hidden="true">+</span><span class="fab-label">Операция</span></button>
+    <nav class="bottom-nav" aria-label="Разделы приложения">
+      <button type="button" class="nav-btn active" data-tab="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/></svg><span>Главная</span></button>
+      <button type="button" class="nav-btn" data-tab="transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="7" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/></svg><span>Операции</span></button>
+      <button type="button" class="nav-btn" data-tab="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10m6 10V4m5 16v-8m5 8v-5"/></svg><span>Аналитика</span></button>
+      <button type="button" class="nav-btn" data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.2 1-1.8 3.1-1.6-.6a8 8 0 0 1-2.1 1.2L15 21h-3.6l-.3-1.6a8 8 0 0 1-2.1-1.2l-1.5.6-1.8-3.1 1.2-1a8 8 0 0 1 0-2.4l-1.2-1 1.8-3.1 1.5.6a8 8 0 0 1 2.1-1.2L11.4 5H15l.3 1.6a8 8 0 0 1 2.1 1.2l1.6-.6 1.8 3.1-1.3 1a8 8 0 0 1-.1 3.7Z" transform="translate(-1.2 -1.2) scale(1.1)"/></svg><span>Настройки</span></button>
+    </nav>
+  </div>
+
+  <dialog id="txDialog" class="modal" aria-labelledby="dialogTitle">
+    <form id="txForm" novalidate>
+      <div class="modal-head"><div><div class="eyebrow">ЗАПИСЬ В БЮДЖЕТ</div><h2 id="dialogTitle">Новая операция</h2></div><button type="button" class="icon-btn close" id="closeDialog" aria-label="Закрыть">×</button></div>
+      <div class="type-switch" role="group" aria-label="Тип операции">
+        <button type="button" data-type="expense" class="chosen">Расход</button>
+        <button type="button" data-type="income">Доход</button>
+        <button type="button" data-type="transfer">Перевод</button>
+      </div>
+      <label class="input-label" for="txAmount">Сумма, ₽</label>
+      <input class="amount-input" id="txAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" maxlength="16" required>
+      <div class="form-grid">
+        <div class="field"><label for="txAccount">Счёт списания / зачисления</label><select id="txAccount" required><option value="card">💳 Карта</option><option value="savings">🏦 Накопительный</option></select></div>
+        <div class="field" id="txCategoryWrap"><label for="txCategory">Категория</label><select id="txCategory"></select></div>
+        <div class="field hidden" id="txToWrap"><label for="txTo">Куда переводим</label><select id="txTo"><option value="savings">🏦 Накопительный</option><option value="card">💳 Карта</option></select></div>
+        <div class="field"><label for="txDate">Дата</label><input id="txDate" type="date" required></div>
+        <div class="field full"><label for="txNote">Комментарий</label><input id="txNote" maxlength="160" placeholder="Например, кофе и печенье"></div>
+      </div>
+      <p id="formError" class="form-error" role="alert" hidden></p>
+      <div class="modal-actions"><button type="button" id="deleteTx" class="danger-outline hidden">Удалить</button><button type="submit" class="primary-btn">Сохранить</button></div>
+    </form>
+  </dialog>
+  <input type="file" id="importFile" accept="application/json,.json" hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
